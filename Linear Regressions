@@ -1,0 +1,24 @@
+getwd() # where am I?
+list.files("dataSets") # files in the dataSets folder
+
+# read the states data
+states.data <- readRDS("dataSets/states.rds") 
+#get labels
+states.info <- data.frame(attributes(states.data)[c("names", "var.labels")])
+#look at last few labels
+tail(states.info, 8)
+
+# summary of energy and metro columns, all rows
+sts.en.met <- subset(states.data, select = c("energy", "metro"))
+summary(sts.en.met)
+
+# correlation between energy and metro
+cor(sts.en.met)
+
+#scatter plot of energy and metro
+plot(sts.en.met)
+
+# Fit our regression model
+met.mod <- lm(metro ~ energy, # regression formula
+              data=states.data) 
+summary(met.mod)
