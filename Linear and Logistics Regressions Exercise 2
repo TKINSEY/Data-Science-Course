@@ -1,0 +1,25 @@
+getwd() # where am I?
+list.files("dataSets") # files in the dataSets folder
+
+# read the states data
+states.data <- readRDS("dataSets/states.rds") 
+#get labels
+states.info <- data.frame(attributes(states.data)[c("names", "var.labels")])
+#look at last few labels
+tail(states.info, 8)
+
+# Fit our regression model
+sat.metrobydensity <- lm(energy ~ metro*density,
+                            data=states.data)
+coef(summary(sat.metrobydensity))
+
+ModelC<- lm(energy ~ region, data=states.data)
+coef(summary(ModelC))
+anova(ModelC)
+
+contrasts(states.data$region)
+
+coef(summary(lm(energy ~ C(region, base=4),
+                data=states.data)))
+coef(summary(lm(energy ~ C(region, contr.helmert),
+                data=states.data)))
