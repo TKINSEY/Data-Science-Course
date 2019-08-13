@@ -1,0 +1,25 @@
+getwd()
+setwd("C:/Users/tkinsey/Desktop/data")
+read.csv(file = "titanic_original.csv", header = FALSE)
+titanic_original <- read.csv(file = "titanic_original.csv")
+View(titanic_original)
+titanic <- titanic_original
+colnames(titanic)
+titanic$embarked
+library(dplyr)
+titanic$embarked = as.character(titanic$embarked)
+titanicFilledEmbarkedEmptyWithS <- titanic %>%
+  mutate(embarked = ifelse(embarked == '', 'S', embarked))
+titanicFilledEmbarkedEmptyWithS$embarked
+titanicAgeRowsOnly <- filter(titanicFilledEmbarkedEmptyWithS, age != '')
+titanicAgeMean <- mean(titanicAgeRowsOnly$age)
+titanicFilledAgeWithMeanAge <- titanicFilledEmbarkedEmptyWithS %>%
+  mutate(age = ifelse(is.na(age), titanicAgeMean, age))
+titanicFilledAgeWithMeanAge$age
+titanicFilledEmptyBoatWithNA <- titanicFilledAgeWithMeanAge %>%
+  mutate(boat = ifelse(boat == '', NA, boat))
+titanicFilledEmptyBoatWithNA$boat
+titanicAddedHasCabinNumber <-  titanicFilledEmptyBoatWithNA %>%
+  mutate(has_cabin_number = ifelse(cabin == '', 0, 1))
+titanicAddedHasCabinNumber$has_cabin_number
+write.csv(titanicAddedHasCabinNumber, file = "titanic_clean.csv")
